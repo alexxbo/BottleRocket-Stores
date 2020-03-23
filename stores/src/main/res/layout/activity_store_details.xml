@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/toolbar" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/photo_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/app_margin_medium"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginEnd="@dimen/app_margin_medium">
+
+        <ImageView
+            android:id="@+id/storeLogo"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription"
+            tools:src="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/storeTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/app_margin_medium"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+            app:layout_constraintBottom_toTopOf="@id/storePhone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/storeLogo"
+            app:layout_constraintTop_toTopOf="@+id/storeLogo"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="@tools:sample/lorem" />
+
+        <TextView
+            android:id="@id/storePhone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/app_margin_medium"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            app:layout_constraintBottom_toBottomOf="@+id/storeLogo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/storeLogo"
+            app:layout_constraintTop_toBottomOf="@id/storeTitle"
+            tools:text="@tools:sample/us_phones" />
+
+        <TextView
+            android:id="@+id/storeState"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/app_margin_medium"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/storeLogo"
+            tools:text="@tools:sample/cities" />
+
+        <TextView
+            android:id="@+id/storeZipcode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+            app:layout_constraintEnd_toStartOf="@id/storeCity"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/storeState"
+            tools:text="@tools:sample/us_zipcodes" />
+
+        <TextView
+            android:id="@+id/storeCity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/app_margin_small"
+            android:gravity="end"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/storeZipcode"
+            app:layout_constraintTop_toBottomOf="@+id/storeState"
+            tools:text="@tools:sample/cities" />
+
+        <TextView
+            android:id="@+id/storeAddress"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/storeZipcode"
+            tools:text="@tools:sample/cities" />
+
+        <Button
+            android:id="@+id/storeLocationsButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/app_margin_medium"
+            android:text="@string/show_on_the_map_button"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/storeAddress" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/emptyState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/empty_data"
+        android:textSize="@dimen/app_font_18"
+        android:visibility="gone" />
+
+</FrameLayout>

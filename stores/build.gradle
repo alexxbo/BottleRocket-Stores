@@ -1,0 +1,59 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion compile_sdk_version
+    buildToolsVersion build_tools_version
+
+    defaultConfig {
+        minSdkVersion min_sdk_version
+        targetSdkVersion compile_sdk_version
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+    }
+
+    flavorDimensions "default"
+    productFlavors {
+
+        prod {
+            applicationId "net.omisoft.bottlerocket.stores"
+            buildConfigField "String", 'BASE_URL', "\"http://sandbox.bottlerocketapps.com/\""
+            buildConfigField "int", "DATABASE_VERSION", "1"
+            buildConfigField 'String', 'DATABASE_NAME', '"stores.db"'
+        }
+
+        stage {
+            applicationId 'net.omisoft.bottlerocket.stores.stage'
+            buildConfigField "String", 'BASE_URL', "\"http://sandbox.bottlerocketapps.com/\""
+            buildConfigField "int", "DATABASE_VERSION", "1"
+            buildConfigField 'String', 'DATABASE_NAME', '"stores.db"'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+kapt { generateStubs = true }
+
+dependencies {
+    implementation libraries
+    kapt librariesKapt
+}

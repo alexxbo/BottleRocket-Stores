@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">BottleRocket Stores</string>
+    <string name="empty_data">Unfortunately! Something went wrong</string>
+    <string name="size_placeholder">width: %1$d x height: %2$d</string>
+    <string name="empty_state">There\'s nothing there, yet.\nPlease, try again later</string>
+
+    <!-- Stores Screen -->
+    <string name="stores_toolbar_title">Stores</string>
+    <string name="store_city">City: %1$s</string>
+    <string name="store_address">Address: %1$s</string>
+    <string name="store_phone">Phone: %1$s</string>
+
+    <!-- Store Details -->
+    <string name="store_show_on_map_button">Show on map</string>
+    <string name="store_details_toolbar_title">Store Details</string>
+    <string name="store_state">State: %1$s</string>
+    <string name="store_zipcode">Zip Code: %1$s</string>
+    <string name="show_on_the_map_button">Show on the map</string>
+
+</resources>

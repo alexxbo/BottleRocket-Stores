@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Margins -->
+    <dimen name="app_margin_medium">16dp</dimen>
+    <dimen name="app_margin_small">8dp</dimen>
+    <dimen name="app_margin_smallest">4dp</dimen>
+
+    <!-- Fonts -->
+    <dimen name="app_font_18">18sp</dimen>
+
+    <!-- Splash screen -->
+    <dimen name="logo_size">100dp</dimen>
+
+    <!-- Stores screen -->
+    <dimen name="store_logo_size">70dp</dimen>
+
+</resources>
