@@ -5,6 +5,6 @@ import net.omisoft.stores.database.entity.Store
 
 interface StoreDetailsView : View {
     fun publishData(store: Store)
-    fun showOmMap(locationData: String)
+    fun showOnMap(locationData: String)
     fun showEmptyState()
 }

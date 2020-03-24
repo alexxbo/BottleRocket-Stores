@@ -22,7 +22,6 @@ import net.omisoft.stores.screens.detail.StoreDetailsActivity
 import net.omisoft.stores.screens.list.adapter.StoresAdapter
 import net.omisoft.stores.screens.list.di.DaggerStoresComponent
 import net.omisoft.stores.screens.list.di.StoresModule
-import timber.log.Timber
 import javax.inject.Inject
 
 class StoresActivity : BaseActivity<StoresView, StoresPresenter>(), StoresView {
@@ -36,7 +35,7 @@ class StoresActivity : BaseActivity<StoresView, StoresPresenter>(), StoresView {
     }
 
     @Inject override lateinit var presenter: StoresPresenter
-    private var adapter: StoresAdapter? = null
+    private lateinit var adapter: StoresAdapter
 
     private val component by lazy {
         DaggerStoresComponent.builder()
@@ -72,25 +71,8 @@ class StoresActivity : BaseActivity<StoresView, StoresPresenter>(), StoresView {
     override fun publishData(data: LiveData<PagedList<Store>>) {
         data.observe(this, Observer<List<Store>> { stores ->
             stores?.let {
-                Timber.e("stores $stores")
-                if (adapter == null) {
-                    adapter = StoresAdapter(object : StoresAdapter.ItemClickListener {
-                        override fun onItemClick(store: Store) {
-                            presenter.onItemClicked(store)
-                        }
-                    })
-                    listView.adapter = adapter
-                }
-
-                adapter?.let { adapter ->
-                    data.observe(this, Observer {
-                        Timber.e("add list = ${it.size}")
-                        adapter.submitList(it)
-                    })
-                }
-                val itemCount = adapter?.itemCount ?: 0
-                Timber.e("count $itemCount")
-                presenter.onStoreListEmpty(adapter?.itemCount ?: 0 == 0 && stores.isEmpty())
+                data.observe(this, Observer { adapter.submitList(it) })
+                presenter.onStoreListEmpty(adapter.itemCount == 0 && stores.isEmpty())
             }
         })
     }
@@ -117,6 +99,14 @@ class StoresActivity : BaseActivity<StoresView, StoresPresenter>(), StoresView {
         toolbar?.apply {
             title = getString(R.string.stores_toolbar_title)
         }
+
+        adapter = StoresAdapter(object : StoresAdapter.ItemClickListener {
+            override fun onItemClick(store: Store) {
+                presenter.onItemClicked(store)
+            }
+        })
+        listView.adapter = adapter
+
         swipeRefreshContainer.setOnRefreshListener { presenter.loadContent() }
 
         val dividerItemDecoration = DividerItemDecoration(this, LinearLayoutManager.VERTICAL)

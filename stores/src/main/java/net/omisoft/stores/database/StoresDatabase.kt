@@ -14,7 +14,6 @@ abstract class StoresDatabase : RoomDatabase() {
     abstract fun storeDao(): StoreDao
 }
 
-
 private lateinit var INSTANCE: StoresDatabase
 
 fun getDatabase(context: Context): StoresDatabase {

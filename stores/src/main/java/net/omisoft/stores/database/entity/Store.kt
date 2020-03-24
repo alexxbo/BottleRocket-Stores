@@ -55,6 +55,7 @@ data class Store(@PrimaryKey @ColumnInfo(name = ID)
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(storeId)
         parcel.writeString(address)
         parcel.writeString(city)
         parcel.writeString(latitude)
@@ -62,7 +63,6 @@ data class Store(@PrimaryKey @ColumnInfo(name = ID)
         parcel.writeString(name)
         parcel.writeString(phone)
         parcel.writeString(state)
-        parcel.writeString(storeId)
         parcel.writeString(storeLogoURL)
         parcel.writeString(zipcode)
     }

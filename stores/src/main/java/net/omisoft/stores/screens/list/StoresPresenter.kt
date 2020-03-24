@@ -36,9 +36,10 @@ class StoresPresenter(private val repository: StoresRepository,
     }
 
     fun onStoreListEmpty(isEmptyList: Boolean) {
-        when {
-            isEmptyList -> view?.showEmptyState()
-            else -> view?.hideEmptyState()
+        if (isEmptyList) {
+            view?.showEmptyState()
+        } else {
+            view?.hideEmptyState()
         }
     }
 

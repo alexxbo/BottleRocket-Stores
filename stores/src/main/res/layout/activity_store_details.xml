@@ -17,8 +17,8 @@
 
         <ImageView
             android:id="@+id/storeLogo"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="@dimen/store_logo_size"
+            android:layout_height="@dimen/store_logo_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription"
@@ -108,9 +108,10 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
+        android:layout_width="match_parent"
         android:id="@+id/emptyState"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
         android:gravity="center"
         android:text="@string/empty_data"
         android:textSize="@dimen/app_font_18"

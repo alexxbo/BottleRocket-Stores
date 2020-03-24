@@ -17,7 +17,7 @@ class StoreDetailsPresenter : Presenter<StoreDetailsView>() {
     }
 
     fun onOpenMapClick() {
-        locationData?.let { view?.showOmMap(it) }
+        locationData?.let { view?.showOnMap(it) }
     }
 
     private fun prepareLocationData(latitude: String, longitude: String) {

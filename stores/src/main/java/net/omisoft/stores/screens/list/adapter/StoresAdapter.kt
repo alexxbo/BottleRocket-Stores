@@ -20,17 +20,7 @@ class StoresAdapter(private val listener: ItemClickListener) :
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Store>() {
             override fun areItemsTheSame(old: Store, new: Store) = old.storeId == new.storeId
 
-            override fun areContentsTheSame(old: Store, new: Store): Boolean {
-                return old.address == new.address
-                        && old.city == new.city
-                        && old.latitude == new.latitude
-                        && old.longitude == new.longitude
-                        && old.name == new.name
-                        && old.phone == new.phone
-                        && old.state == new.state
-                        && old.storeLogoURL == new.storeLogoURL
-                        && old.zipcode == new.zipcode
-            }
+            override fun areContentsTheSame(old: Store, new: Store) = old == new
         }
     }
 

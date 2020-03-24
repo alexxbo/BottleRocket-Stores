@@ -74,5 +74,4 @@
         app:layout_constraintTop_toBottomOf="@id/storeCity"
         tools:text="@tools:sample/us_zipcodes" />
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>

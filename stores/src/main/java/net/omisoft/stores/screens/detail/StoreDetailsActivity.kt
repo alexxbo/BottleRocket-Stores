@@ -64,7 +64,7 @@ class StoreDetailsActivity : BaseActivity<StoreDetailsView, StoreDetailsPresente
         storeAddress.text = getString(R.string.store_address, store.address)
     }
 
-    override fun showOmMap(locationData: String) {
+    override fun showOnMap(locationData: String) {
         val gmmIntentUri: Uri = Uri.parse(locationData)
         val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
         mapIntent.setPackage(MAP_PACKAGE)
