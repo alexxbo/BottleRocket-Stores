@@ -8,13 +8,11 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.activity_stores.*
-import kotlinx.android.synthetic.main.toolbar.*
 import net.omisoft.mvptemplate.R
+import net.omisoft.mvptemplate.databinding.ActivityStoresBinding
 import net.omisoft.stores.App
 import net.omisoft.stores.common.arch.BaseActivity
 import net.omisoft.stores.database.entity.Store
@@ -34,21 +32,25 @@ class StoresActivity : BaseActivity<StoresView, StoresPresenter>(), StoresView {
         }
     }
 
-    @Inject override lateinit var presenter: StoresPresenter
+    @Inject
+    override lateinit var presenter: StoresPresenter
+    private lateinit var binding: ActivityStoresBinding
     private lateinit var adapter: StoresAdapter
 
     private val component by lazy {
         DaggerStoresComponent.builder()
-                .appComponent((application as App).component)
-                .activity(this)
-                .plus(StoresModule())
-                .build()
+            .appComponent((application as App).component)
+            .activity(this)
+            .plus(StoresModule())
+            .build()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         component.inject(this)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_stores)
+
+        binding = ActivityStoresBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         initView()
         presenter.loadContent()
@@ -61,17 +63,17 @@ class StoresActivity : BaseActivity<StoresView, StoresPresenter>(), StoresView {
     }
 
     override fun showLoading() {
-        swipeRefreshContainer.isRefreshing = true
+        binding.swipeRefreshContainer.isRefreshing = true
     }
 
     override fun hideLoading() {
-        swipeRefreshContainer.isRefreshing = false
+        binding.swipeRefreshContainer.isRefreshing = false
     }
 
     override fun publishData(data: LiveData<PagedList<Store>>) {
-        data.observe(this, Observer<List<Store>> { stores ->
+        data.observe(this, { stores ->
             stores?.let {
-                data.observe(this, Observer { adapter.submitList(it) })
+                data.observe(this, { adapter.submitList(it) })
                 presenter.onStoreListEmpty(adapter.itemCount == 0 && stores.isEmpty())
             }
         })
@@ -82,13 +84,13 @@ class StoresActivity : BaseActivity<StoresView, StoresPresenter>(), StoresView {
     }
 
     override fun showEmptyState() {
-        listView.visibility = View.GONE
-        emptyState.visibility = View.VISIBLE
+        binding.listView.visibility = View.GONE
+        binding.emptyState.visibility = View.VISIBLE
     }
 
     override fun hideEmptyState() {
-        emptyState.visibility = View.GONE
-        listView.visibility = View.VISIBLE
+        binding.emptyState.visibility = View.GONE
+        binding.listView.visibility = View.VISIBLE
     }
 
     override fun showMessage(msg: String) {
@@ -96,7 +98,7 @@ class StoresActivity : BaseActivity<StoresView, StoresPresenter>(), StoresView {
     }
 
     private fun initView() {
-        toolbar?.apply {
+        binding.includedToolbar.toolbar.apply {
             title = getString(R.string.stores_toolbar_title)
         }
 
@@ -105,13 +107,13 @@ class StoresActivity : BaseActivity<StoresView, StoresPresenter>(), StoresView {
                 presenter.onItemClicked(store)
             }
         })
-        listView.adapter = adapter
+        binding.listView.adapter = adapter
 
-        swipeRefreshContainer.setOnRefreshListener { presenter.loadContent() }
+        binding.swipeRefreshContainer.setOnRefreshListener { presenter.loadContent() }
 
         val dividerItemDecoration = DividerItemDecoration(this, LinearLayoutManager.VERTICAL)
         val divider: Drawable? = ContextCompat.getDrawable(this, R.drawable.divider)
         divider?.let { dividerItemDecoration.setDrawable(divider) }
-        listView.addItemDecoration(dividerItemDecoration)
+        binding.listView.addItemDecoration(dividerItemDecoration)
     }
 }

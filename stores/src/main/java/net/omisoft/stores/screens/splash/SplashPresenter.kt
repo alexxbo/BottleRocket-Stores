@@ -1,6 +1,7 @@
 package net.omisoft.stores.screens.splash
 
 import android.os.Handler
+import android.os.Looper
 import net.omisoft.stores.common.arch.Presenter
 
 class SplashPresenter : Presenter<SplashView>() {
@@ -9,7 +10,7 @@ class SplashPresenter : Presenter<SplashView>() {
         private const val SPLASH_DELAY = 1000L
     }
 
-    private var handler = Handler()
+    private var handler = Handler(Looper.getMainLooper())
 
     fun doOnStart() {
         handler.postDelayed({
