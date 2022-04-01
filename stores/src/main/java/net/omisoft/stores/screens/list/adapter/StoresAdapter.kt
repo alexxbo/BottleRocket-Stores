@@ -2,7 +2,7 @@ package net.omisoft.stores.screens.list.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.paging.PagedListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -12,7 +12,7 @@ import net.omisoft.stores.common.data.model.Store
 
 class StoresAdapter(
     private val listener: (Store) -> Unit,
-) : PagedListAdapter<Store, StoresAdapter.ViewHolder>(DIFF_CALLBACK) {
+) : PagingDataAdapter<Store, StoresAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Store>() {

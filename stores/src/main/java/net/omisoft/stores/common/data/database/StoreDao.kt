@@ -1,6 +1,6 @@
 package net.omisoft.stores.common.data.database
 
-import androidx.paging.DataSource
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -11,7 +11,7 @@ import net.omisoft.stores.common.data.database.entity.StoreEntity
 interface StoreDao {
 
     @Query("SELECT * FROM ${StoreEntity.ColumnName.TABLE_NAME}")
-    fun getAll(): DataSource.Factory<Int, StoreEntity>
+    fun getAll(): PagingSource<Int, StoreEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(storeList: List<StoreEntity>)

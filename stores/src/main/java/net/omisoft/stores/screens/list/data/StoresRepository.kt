@@ -1,8 +1,8 @@
 package net.omisoft.stores.screens.list.data
 
 import androidx.lifecycle.LiveData
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
+import androidx.lifecycle.map
+import androidx.paging.*
 import io.reactivex.Completable
 import net.omisoft.stores.common.data.database.StoreDao
 import net.omisoft.stores.common.data.database.entity.StoreEntity
@@ -23,7 +23,7 @@ interface StoresRepository {
         }
     }
 
-    fun getStore(): LiveData<PagedList<Store>>
+    fun getStore(): LiveData<PagingData<Store>>
     fun refreshStores(): Completable
 }
 
@@ -33,14 +33,21 @@ private class StoresRepositoryImpl(
 ) : StoresRepository {
 
     companion object {
-        private const val PAGE_SIZE = 30
+        private const val PAGE_SIZE = 15
     }
 
-    override fun getStore(): LiveData<PagedList<Store>> {
-        return LivePagedListBuilder(
-            dataSourceFactory = storeDao.getAll().map { it.toStore() },
-            pageSize = PAGE_SIZE
-        ).build()
+    override fun getStore(): LiveData<PagingData<Store>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                initialLoadSize = PAGE_SIZE,
+                prefetchDistance = PAGE_SIZE,
+                enablePlaceholders = false,
+            ),
+            pagingSourceFactory = { storeDao.getAll() }
+        )
+            .liveData
+            .map { pagingData -> pagingData.map { it.toStore() } }
     }
 
     override fun refreshStores(): Completable {

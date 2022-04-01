@@ -8,9 +8,11 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
-import androidx.paging.PagedList
+import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import net.omisoft.mvptemplate.R
 import net.omisoft.mvptemplate.databinding.ActivityStoresBinding
 import net.omisoft.stores.App
@@ -70,12 +72,9 @@ class StoresActivity : BaseActivity<StoresView, StoresPresenter>(), StoresView {
         binding.swipeRefreshContainer.isRefreshing = false
     }
 
-    override fun publishData(data: LiveData<PagedList<Store>>) {
+    override fun publishData(data: LiveData<PagingData<Store>>) {
         data.observe(this, { stores ->
-            stores?.let {
-                data.observe(this, { adapter.submitList(it) })
-                presenter.onStoreListEmpty(adapter.itemCount == 0 && stores.isEmpty())
-            }
+            stores?.let { data.observe(this, { adapter.submitData(lifecycle, it) }) }
         })
     }
 
@@ -103,17 +102,25 @@ class StoresActivity : BaseActivity<StoresView, StoresPresenter>(), StoresView {
                 title = getString(R.string.stores_toolbar_title)
             }
 
-            adapter = StoresAdapter(
-                listener = { presenter.onItemClicked(it) }
-            )
+            adapter = StoresAdapter(listener = { presenter.onItemClicked(it) })
+            adapter.addLoadStateListener { loadStates ->
+                presenter.onStoreListEmpty(
+                    loadStates.source.refresh is LoadState.NotLoading
+                            && loadStates.append.endOfPaginationReached
+                            && adapter.itemCount == 0
+                )
+            }
             listView.adapter = adapter
+            listView.addDivider()
 
             swipeRefreshContainer.setOnRefreshListener { presenter.loadContent() }
-
-            val dividerItemDecoration = DividerItemDecoration(this@StoresActivity, LinearLayoutManager.VERTICAL)
-            val divider: Drawable? = ContextCompat.getDrawable(this@StoresActivity, R.drawable.divider)
-            divider?.let { dividerItemDecoration.setDrawable(divider) }
-            listView.addItemDecoration(dividerItemDecoration)
         }
+    }
+
+    private fun RecyclerView.addDivider() {
+        val dividerItemDecoration = DividerItemDecoration(this@StoresActivity, LinearLayoutManager.VERTICAL)
+        val divider: Drawable? = ContextCompat.getDrawable(this@StoresActivity, R.drawable.divider)
+        divider?.let { dividerItemDecoration.setDrawable(divider) }
+        addItemDecoration(dividerItemDecoration)
     }
 }
