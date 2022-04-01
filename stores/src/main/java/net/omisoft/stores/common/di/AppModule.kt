@@ -5,9 +5,9 @@ import dagger.Provides
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.omisoft.stores.App
+import net.omisoft.stores.common.data.database.StoresDatabase
+import net.omisoft.stores.common.data.database.getDatabase
 import net.omisoft.stores.common.rx.RxWorkers
-import net.omisoft.stores.database.StoresDatabase
-import net.omisoft.stores.database.getDatabase
 import javax.inject.Singleton
 
 @Module

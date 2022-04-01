@@ -1,14 +1,16 @@
-package net.omisoft.stores.database
+package net.omisoft.stores.common.data.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import net.omisoft.mvptemplate.BuildConfig
-import net.omisoft.stores.database.entity.Store
+import net.omisoft.stores.common.data.database.entity.StoreEntity
 
-@Database(entities = [Store::class],
-        version = BuildConfig.DATABASE_VERSION, exportSchema = false)
+@Database(
+    entities = [StoreEntity::class],
+    version = BuildConfig.DATABASE_VERSION, exportSchema = false
+)
 abstract class StoresDatabase : RoomDatabase() {
 
     abstract fun storeDao(): StoreDao

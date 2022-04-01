@@ -5,16 +5,16 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import net.omisoft.stores.common.arch.Presenter
 import net.omisoft.stores.common.arch.RxPresenter
+import net.omisoft.stores.common.data.model.Store
 import net.omisoft.stores.common.rx.RxWorkers
 import net.omisoft.stores.common.util.composeWith
-import net.omisoft.stores.database.entity.Store
-import net.omisoft.stores.screens.list.api.StoresApi
 import net.omisoft.stores.screens.list.data.StoresRepository
 import timber.log.Timber
 
-class StoresPresenter(private val repository: StoresRepository,
-                      private val api: StoresApi,
-                      private val workers: RxWorkers) : Presenter<StoresView>(), RxPresenter {
+class StoresPresenter(
+    private val repository: StoresRepository,
+    private val workers: RxWorkers,
+) : Presenter<StoresView>(), RxPresenter {
 
     private val subscriptions by lazy { CompositeDisposable() }
 
@@ -45,10 +45,11 @@ class StoresPresenter(private val repository: StoresRepository,
 
     private fun refreshStores() {
         view?.showLoading()
-        addSubscription(api.getStores()
-                .flatMapCompletable { repository.insertAll(it.stores) }
+        addSubscription(
+            repository.refreshStores()
                 .composeWith(workers)
-                .subscribe({ view?.hideLoading() }, ::onError))
+                .subscribe({ view?.hideLoading() }, ::onError)
+        )
     }
 
     private fun onError(error: Throwable) {

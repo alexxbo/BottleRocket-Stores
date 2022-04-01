@@ -8,10 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import net.omisoft.mvptemplate.R
 import net.omisoft.mvptemplate.databinding.ItemStoreBinding
-import net.omisoft.stores.database.entity.Store
+import net.omisoft.stores.common.data.model.Store
 
-class StoresAdapter(private val listener: ItemClickListener) :
-        PagedListAdapter<Store, StoresAdapter.ViewHolder>(DIFF_CALLBACK) {
+class StoresAdapter(
+    private val listener: (Store) -> Unit,
+) : PagedListAdapter<Store, StoresAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Store>() {
@@ -45,11 +46,7 @@ class StoresAdapter(private val listener: ItemClickListener) :
             storeAddress.text = itemView.context.getString(R.string.store_address, store.address)
             storePhone.text = itemView.context.getString(R.string.store_phone, store.phone)
 
-            itemView.setOnClickListener { listener.onItemClick(store) }
+            itemView.setOnClickListener { listener.invoke(store) }
         }
-    }
-
-    interface ItemClickListener {
-        fun onItemClick(store: Store)
     }
 }

@@ -6,27 +6,35 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import com.bumptech.glide.Glide
+import kotlinx.serialization.json.Json
 import net.omisoft.mvptemplate.BuildConfig
 import net.omisoft.mvptemplate.R
 import net.omisoft.mvptemplate.databinding.ActivityStoreDetailsBinding
 import net.omisoft.stores.App
 import net.omisoft.stores.common.arch.BaseActivity
-import net.omisoft.stores.database.entity.Store
+import net.omisoft.stores.common.data.model.Store
 import net.omisoft.stores.screens.detail.di.DaggerStoreDetailsComponent
 import net.omisoft.stores.screens.detail.di.StoreDetailsModule
 import javax.inject.Inject
 
+private const val STORE_EXTRA = "${BuildConfig.APPLICATION_ID}_STORE_EXTRA"
+private var Intent.storeExtra
+    get() = getStringExtra(STORE_EXTRA).orEmpty()
+        .let { Json.decodeFromString(Store.serializer(), it) }
+    set(value) {
+        putExtra(STORE_EXTRA, Json.encodeToString(Store.serializer(), value))
+    }
+
 class StoreDetailsActivity : BaseActivity<StoreDetailsView, StoreDetailsPresenter>(),
-        StoreDetailsView {
+    StoreDetailsView {
 
     companion object {
-        private const val STORE_EXTRA = "${BuildConfig.APPLICATION_ID}_STORE_EXTRA"
         private const val MAP_PACKAGE = "com.google.android.apps.maps"
 
         fun launch(activity: Activity, store: Store) {
-            val intent = Intent(activity, StoreDetailsActivity::class.java)
-            intent.putExtra(STORE_EXTRA, store)
-            activity.startActivity(intent)
+            Intent(activity, StoreDetailsActivity::class.java)
+                .apply { storeExtra = store }
+                .also { activity.startActivity(it) }
         }
     }
 
@@ -50,7 +58,7 @@ class StoreDetailsActivity : BaseActivity<StoreDetailsView, StoreDetailsPresente
         setContentView(binding.root)
 
         initView()
-        intent?.getParcelableExtra<Store>(STORE_EXTRA).let { presenter.doOnStart(it) }
+        intent?.storeExtra?.let { presenter.doOnStart(it) }
     }
 
     override fun publishData(store: Store) {
@@ -83,10 +91,9 @@ class StoreDetailsActivity : BaseActivity<StoreDetailsView, StoreDetailsPresente
 
     private fun initView() {
         binding.includedToolbar.toolbar.apply {
-            setSupportActionBar(this)
+            title = getString(R.string.store_details_toolbar_title)
             setNavigationIcon(R.drawable.ic_arrow_back)
             setNavigationOnClickListener { finish() }
-            title = getString(R.string.store_details_toolbar_title)
         }
 
         binding.storeLocationsButton.setOnClickListener { presenter.onOpenMapClick() }

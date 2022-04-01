@@ -15,7 +15,7 @@ import net.omisoft.mvptemplate.R
 import net.omisoft.mvptemplate.databinding.ActivityStoresBinding
 import net.omisoft.stores.App
 import net.omisoft.stores.common.arch.BaseActivity
-import net.omisoft.stores.database.entity.Store
+import net.omisoft.stores.common.data.model.Store
 import net.omisoft.stores.screens.detail.StoreDetailsActivity
 import net.omisoft.stores.screens.list.adapter.StoresAdapter
 import net.omisoft.stores.screens.list.di.DaggerStoresComponent
@@ -93,27 +93,27 @@ class StoresActivity : BaseActivity<StoresView, StoresPresenter>(), StoresView {
         binding.listView.visibility = View.VISIBLE
     }
 
-    override fun showMessage(msg: String) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+    override fun showMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun initView() {
-        binding.includedToolbar.toolbar.apply {
-            title = getString(R.string.stores_toolbar_title)
-        }
-
-        adapter = StoresAdapter(object : StoresAdapter.ItemClickListener {
-            override fun onItemClick(store: Store) {
-                presenter.onItemClicked(store)
+        binding.run {
+            includedToolbar.toolbar.apply {
+                title = getString(R.string.stores_toolbar_title)
             }
-        })
-        binding.listView.adapter = adapter
 
-        binding.swipeRefreshContainer.setOnRefreshListener { presenter.loadContent() }
+            adapter = StoresAdapter(
+                listener = { presenter.onItemClicked(it) }
+            )
+            listView.adapter = adapter
 
-        val dividerItemDecoration = DividerItemDecoration(this, LinearLayoutManager.VERTICAL)
-        val divider: Drawable? = ContextCompat.getDrawable(this, R.drawable.divider)
-        divider?.let { dividerItemDecoration.setDrawable(divider) }
-        binding.listView.addItemDecoration(dividerItemDecoration)
+            swipeRefreshContainer.setOnRefreshListener { presenter.loadContent() }
+
+            val dividerItemDecoration = DividerItemDecoration(this@StoresActivity, LinearLayoutManager.VERTICAL)
+            val divider: Drawable? = ContextCompat.getDrawable(this@StoresActivity, R.drawable.divider)
+            divider?.let { dividerItemDecoration.setDrawable(divider) }
+            listView.addItemDecoration(dividerItemDecoration)
+        }
     }
 }

@@ -3,8 +3,8 @@ package net.omisoft.stores.common.di
 import dagger.BindsInstance
 import dagger.Component
 import net.omisoft.stores.App
+import net.omisoft.stores.common.data.database.StoresDatabase
 import net.omisoft.stores.common.rx.RxWorkers
-import net.omisoft.stores.database.StoresDatabase
 import javax.inject.Singleton
 
 @Singleton
