@@ -6,15 +6,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import com.bumptech.glide.Glide
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.json.Json
 import net.omisoft.mvptemplate.BuildConfig
 import net.omisoft.mvptemplate.R
 import net.omisoft.mvptemplate.databinding.ActivityStoreDetailsBinding
-import net.omisoft.stores.App
 import net.omisoft.stores.common.arch.BaseActivity
 import net.omisoft.stores.common.data.model.Store
-import net.omisoft.stores.screens.detail.di.DaggerStoreDetailsComponent
-import net.omisoft.stores.screens.detail.di.StoreDetailsModule
 import javax.inject.Inject
 
 private const val STORE_EXTRA = "${BuildConfig.APPLICATION_ID}_STORE_EXTRA"
@@ -25,6 +23,7 @@ private var Intent.storeExtra
         putExtra(STORE_EXTRA, Json.encodeToString(Store.serializer(), value))
     }
 
+@AndroidEntryPoint
 class StoreDetailsActivity : BaseActivity<StoreDetailsView, StoreDetailsPresenter>(),
     StoreDetailsView {
 
@@ -38,20 +37,11 @@ class StoreDetailsActivity : BaseActivity<StoreDetailsView, StoreDetailsPresente
         }
     }
 
-    private val component by lazy {
-        DaggerStoreDetailsComponent.builder()
-            .appComponent((application as App).component)
-            .activity(this)
-            .plus(StoreDetailsModule())
-            .build()
-    }
-
     @Inject
     override lateinit var presenter: StoreDetailsPresenter
     private lateinit var binding: ActivityStoreDetailsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        component.inject(this)
         super.onCreate(savedInstanceState)
 
         binding = ActivityStoreDetailsBinding.inflate(layoutInflater)

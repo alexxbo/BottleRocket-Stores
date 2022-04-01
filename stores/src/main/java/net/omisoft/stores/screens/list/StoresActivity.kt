@@ -13,17 +13,16 @@ import androidx.paging.PagingData
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 import net.omisoft.mvptemplate.R
 import net.omisoft.mvptemplate.databinding.ActivityStoresBinding
-import net.omisoft.stores.App
 import net.omisoft.stores.common.arch.BaseActivity
 import net.omisoft.stores.common.data.model.Store
 import net.omisoft.stores.screens.detail.StoreDetailsActivity
 import net.omisoft.stores.screens.list.adapter.StoresAdapter
-import net.omisoft.stores.screens.list.di.DaggerStoresComponent
-import net.omisoft.stores.screens.list.di.StoresModule
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class StoresActivity : BaseActivity<StoresView, StoresPresenter>(), StoresView {
 
     companion object {
@@ -39,16 +38,7 @@ class StoresActivity : BaseActivity<StoresView, StoresPresenter>(), StoresView {
     private lateinit var binding: ActivityStoresBinding
     private lateinit var adapter: StoresAdapter
 
-    private val component by lazy {
-        DaggerStoresComponent.builder()
-            .appComponent((application as App).component)
-            .activity(this)
-            .plus(StoresModule())
-            .build()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        component.inject(this)
         super.onCreate(savedInstanceState)
 
         binding = ActivityStoresBinding.inflate(layoutInflater)

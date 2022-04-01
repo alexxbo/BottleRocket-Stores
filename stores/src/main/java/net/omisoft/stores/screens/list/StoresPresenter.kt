@@ -10,8 +10,9 @@ import net.omisoft.stores.common.rx.RxWorkers
 import net.omisoft.stores.common.util.composeWith
 import net.omisoft.stores.screens.list.data.StoresRepository
 import timber.log.Timber
+import javax.inject.Inject
 
-class StoresPresenter(
+class StoresPresenter @Inject constructor(
     private val repository: StoresRepository,
     private val workers: RxWorkers,
 ) : Presenter<StoresView>(), RxPresenter {

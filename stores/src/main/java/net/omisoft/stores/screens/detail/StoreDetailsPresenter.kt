@@ -2,8 +2,9 @@ package net.omisoft.stores.screens.detail
 
 import net.omisoft.stores.common.arch.Presenter
 import net.omisoft.stores.common.data.model.Store
+import javax.inject.Inject
 
-class StoreDetailsPresenter : Presenter<StoreDetailsView>() {
+class StoreDetailsPresenter @Inject constructor() : Presenter<StoreDetailsView>() {
 
     private var locationData: String? = null
 

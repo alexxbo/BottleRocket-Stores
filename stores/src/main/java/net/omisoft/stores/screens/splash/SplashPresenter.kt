@@ -3,8 +3,9 @@ package net.omisoft.stores.screens.splash
 import android.os.Handler
 import android.os.Looper
 import net.omisoft.stores.common.arch.Presenter
+import javax.inject.Inject
 
-class SplashPresenter : Presenter<SplashView>() {
+class SplashPresenter @Inject constructor() : Presenter<SplashView>() {
 
     companion object {
         private const val SPLASH_DELAY = 1000L
