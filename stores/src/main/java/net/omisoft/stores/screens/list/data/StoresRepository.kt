@@ -1,9 +1,12 @@
 package net.omisoft.stores.screens.list.data
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.map
-import androidx.paging.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
+import androidx.paging.rxjava2.flowable
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import net.omisoft.stores.common.data.database.StoreDao
 import net.omisoft.stores.common.data.database.entity.StoreEntity
 import net.omisoft.stores.common.data.database.entity.toStore
@@ -23,7 +26,7 @@ interface StoresRepository {
         }
     }
 
-    fun getStore(): LiveData<PagingData<Store>>
+    fun getStore(): Flowable<PagingData<Store>>
     fun refreshStores(): Completable
 }
 
@@ -36,7 +39,7 @@ private class StoresRepositoryImpl(
         private const val PAGE_SIZE = 15
     }
 
-    override fun getStore(): LiveData<PagingData<Store>> {
+    override fun getStore(): Flowable<PagingData<Store>> {
         return Pager(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
@@ -46,7 +49,7 @@ private class StoresRepositoryImpl(
             ),
             pagingSourceFactory = { storeDao.getAll() }
         )
-            .liveData
+            .flowable
             .map { pagingData -> pagingData.map { it.toStore() } }
     }
 

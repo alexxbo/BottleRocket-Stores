@@ -75,6 +75,13 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$constraint_layout_version"
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation "androidx.activity:activity-ktx:1.4.0"
+
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
 
     //RxJava
     implementation "io.reactivex.rxjava2:rxjava:2.2.21"
@@ -82,6 +89,7 @@ dependencies {
 
     //Paging
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+    implementation "androidx.paging:paging-rxjava2-ktx:$paging_version"
     implementation "androidx.room:room-paging:$room_version"
 
     // Network & serialization

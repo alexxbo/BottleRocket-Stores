@@ -1,16 +1,18 @@
 package net.omisoft.stores.screens.splash
 
 import android.os.Bundle
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import net.omisoft.mvptemplate.R
-import net.omisoft.stores.common.arch.BaseActivity
+import net.omisoft.stores.common.util.EventObserver
 import net.omisoft.stores.screens.list.StoresActivity
-import javax.inject.Inject
+import net.omisoft.stores.screens.splash.navigation.SplashNavigator
 
 @AndroidEntryPoint
-class SplashActivity : BaseActivity<SplashView, SplashPresenter>(), SplashView {
+class SplashActivity : AppCompatActivity() {
 
-    @Inject override lateinit var presenter: SplashPresenter
+    private val viewModel: SplashViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,16 +22,29 @@ class SplashActivity : BaseActivity<SplashView, SplashPresenter>(), SplashView {
     override fun onStart() {
         super.onStart()
 
-        presenter.doOnStart()
+        subscribeUi()
+        viewModel.doOnStart()
     }
 
     override fun onStop() {
         super.onStop()
 
-        presenter.doOnStop()
+        viewModel.doOnStop()
     }
 
-    override fun openContentScreen() {
+    private fun subscribeUi() {
+        viewModel.run {
+            navigateTo.observe(this@SplashActivity, EventObserver { destination -> navigateTo(destination) })
+        }
+    }
+
+    private fun navigateTo(destination: SplashNavigator) {
+        when (destination) {
+            is SplashNavigator.ContentScreenNavigation -> openContentScreen()
+        }
+    }
+
+    private fun openContentScreen() {
         StoresActivity.launch(this)
     }
 }

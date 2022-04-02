@@ -5,15 +5,17 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.json.Json
 import net.omisoft.mvptemplate.BuildConfig
 import net.omisoft.mvptemplate.R
 import net.omisoft.mvptemplate.databinding.ActivityStoreDetailsBinding
-import net.omisoft.stores.common.arch.BaseActivity
 import net.omisoft.stores.common.data.model.Store
-import javax.inject.Inject
+import net.omisoft.stores.common.util.EventObserver
+import net.omisoft.stores.screens.detail.navigation.StoreDetailsNavigator
 
 private const val STORE_EXTRA = "${BuildConfig.APPLICATION_ID}_STORE_EXTRA"
 private var Intent.storeExtra
@@ -24,8 +26,7 @@ private var Intent.storeExtra
     }
 
 @AndroidEntryPoint
-class StoreDetailsActivity : BaseActivity<StoreDetailsView, StoreDetailsPresenter>(),
-    StoreDetailsView {
+class StoreDetailsActivity : AppCompatActivity() {
 
     companion object {
         private const val MAP_PACKAGE = "com.google.android.apps.maps"
@@ -37,8 +38,7 @@ class StoreDetailsActivity : BaseActivity<StoreDetailsView, StoreDetailsPresente
         }
     }
 
-    @Inject
-    override lateinit var presenter: StoreDetailsPresenter
+    private val viewModel: StoreDetailsViewModel by viewModels()
     private lateinit var binding: ActivityStoreDetailsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,10 +48,29 @@ class StoreDetailsActivity : BaseActivity<StoreDetailsView, StoreDetailsPresente
         setContentView(binding.root)
 
         initView()
-        intent?.storeExtra?.let { presenter.doOnStart(it) }
+        subscribeUi()
+        intent?.storeExtra?.let { viewModel.onAction(StoreDetailsAction.OnStart(it)) }
     }
 
-    override fun publishData(store: Store) {
+    private fun subscribeUi() {
+        viewModel.run {
+            navigateTo.observe(this@StoreDetailsActivity, EventObserver { destination -> navigateTo(destination) })
+
+            viewState.run {
+                store.observe(this@StoreDetailsActivity, { updateStore(it) })
+                showEmptyState.observe(this@StoreDetailsActivity, { showEmptyState() })
+            }
+        }
+    }
+
+    private fun navigateTo(destination: StoreDetailsNavigator) {
+        when (destination) {
+            is StoreDetailsNavigator.MapNavigation -> showOnMap(destination.location)
+            is StoreDetailsNavigator.BackNavigation -> goBack()
+        }
+    }
+
+    private fun updateStore(store: Store) {
         binding.run {
 
             Glide.with(root)
@@ -67,25 +86,29 @@ class StoreDetailsActivity : BaseActivity<StoreDetailsView, StoreDetailsPresente
         }
     }
 
-    override fun showOnMap(locationData: String) {
+    private fun showOnMap(locationData: String) {
         val gmmIntentUri: Uri = Uri.parse(locationData)
         val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
         mapIntent.setPackage(MAP_PACKAGE)
         startActivity(mapIntent)
     }
 
-    override fun showEmptyState() {
+    private fun showEmptyState() {
         binding.photoContainer.visibility = View.GONE
         binding.emptyState.visibility = View.VISIBLE
+    }
+
+    private fun goBack() {
+        finish()
     }
 
     private fun initView() {
         binding.includedToolbar.toolbar.apply {
             title = getString(R.string.store_details_toolbar_title)
             setNavigationIcon(R.drawable.ic_arrow_back)
-            setNavigationOnClickListener { finish() }
+            setNavigationOnClickListener { viewModel.onAction(StoreDetailsAction.BackClick) }
         }
 
-        binding.storeLocationsButton.setOnClickListener { presenter.onOpenMapClick() }
+        binding.storeLocationsButton.setOnClickListener { viewModel.onAction(StoreDetailsAction.OpenMapClick) }
     }
 }

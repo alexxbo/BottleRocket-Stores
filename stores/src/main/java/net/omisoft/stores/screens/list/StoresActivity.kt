@@ -4,10 +4,12 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LiveData
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -16,14 +18,14 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import net.omisoft.mvptemplate.R
 import net.omisoft.mvptemplate.databinding.ActivityStoresBinding
-import net.omisoft.stores.common.arch.BaseActivity
 import net.omisoft.stores.common.data.model.Store
+import net.omisoft.stores.common.util.EventObserver
 import net.omisoft.stores.screens.detail.StoreDetailsActivity
 import net.omisoft.stores.screens.list.adapter.StoresAdapter
-import javax.inject.Inject
+import net.omisoft.stores.screens.list.navigation.StoresNavigator
 
 @AndroidEntryPoint
-class StoresActivity : BaseActivity<StoresView, StoresPresenter>(), StoresView {
+class StoresActivity : AppCompatActivity() {
 
     companion object {
         fun launch(activity: Activity) {
@@ -33,10 +35,9 @@ class StoresActivity : BaseActivity<StoresView, StoresPresenter>(), StoresView {
         }
     }
 
-    @Inject
-    override lateinit var presenter: StoresPresenter
     private lateinit var binding: ActivityStoresBinding
-    private lateinit var adapter: StoresAdapter
+    private val viewModel: StoresViewModel by viewModels()
+    private var adapter: StoresAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,44 +46,47 @@ class StoresActivity : BaseActivity<StoresView, StoresPresenter>(), StoresView {
         setContentView(binding.root)
 
         initView()
-        presenter.loadContent()
+        subscribeUi()
+        viewModel.onAction(StoresAction.FetchStoreList)
     }
 
-    override fun onDestroy() {
-        presenter.cancel()
+    private fun subscribeUi() {
+        viewModel.run {
+            navigateTo.observe(this@StoresActivity, EventObserver { destination -> navigateTo(destination) })
+            errorMessage.observe(this@StoresActivity, EventObserver { showMessage(it) })
+            progress.observe(this@StoresActivity, { showLoading(it) })
 
-        super.onDestroy()
+            viewState.run {
+                stores.observe(this@StoresActivity, { updateStores(it) })
+                showEmptyState.observe(this@StoresActivity, { showEmptyState(it) })
+            }
+        }
     }
 
-    override fun showLoading() {
-        binding.swipeRefreshContainer.isRefreshing = true
+    private fun showLoading(show: Boolean) {
+        binding.swipeRefreshContainer.isRefreshing = show
     }
 
-    override fun hideLoading() {
-        binding.swipeRefreshContainer.isRefreshing = false
+    private fun updateStores(data: PagingData<Store>) {
+        adapter?.submitData(lifecycle, data)
     }
 
-    override fun publishData(data: LiveData<PagingData<Store>>) {
-        data.observe(this, { stores ->
-            stores?.let { data.observe(this, { adapter.submitData(lifecycle, it) }) }
-        })
+    private fun navigateTo(destination: StoresNavigator) {
+        when (destination) {
+            is StoresNavigator.StoreDetailsNavigation -> openStoreDetails(destination.store)
+        }
     }
 
-    override fun openStoreDetails(store: Store) {
+    private fun openStoreDetails(store: Store) {
         StoreDetailsActivity.launch(this, store)
     }
 
-    override fun showEmptyState() {
-        binding.listView.visibility = View.GONE
-        binding.emptyState.visibility = View.VISIBLE
+    private fun showEmptyState(show: Boolean) {
+        binding.listView.isGone = show
+        binding.emptyState.isVisible = show
     }
 
-    override fun hideEmptyState() {
-        binding.emptyState.visibility = View.GONE
-        binding.listView.visibility = View.VISIBLE
-    }
-
-    override fun showMessage(message: String) {
+    private fun showMessage(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
@@ -92,18 +96,20 @@ class StoresActivity : BaseActivity<StoresView, StoresPresenter>(), StoresView {
                 title = getString(R.string.stores_toolbar_title)
             }
 
-            adapter = StoresAdapter(listener = { presenter.onItemClicked(it) })
-            adapter.addLoadStateListener { loadStates ->
-                presenter.onStoreListEmpty(
-                    loadStates.source.refresh is LoadState.NotLoading
-                            && loadStates.append.endOfPaginationReached
-                            && adapter.itemCount == 0
+            adapter = StoresAdapter(listener = { viewModel.onAction(StoresAction.ClickItem(it)) })
+            adapter?.addLoadStateListener { loadStates ->
+                viewModel.onAction(
+                    StoresAction.EmptyStoreList(
+                        loadStates.source.refresh is LoadState.NotLoading
+                                && loadStates.append.endOfPaginationReached
+                                && adapter?.itemCount == 0
+                    )
                 )
             }
             listView.adapter = adapter
             listView.addDivider()
 
-            swipeRefreshContainer.setOnRefreshListener { presenter.loadContent() }
+            swipeRefreshContainer.setOnRefreshListener { viewModel.onAction(StoresAction.FetchStoreList) }
         }
     }
 

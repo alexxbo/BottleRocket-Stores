@@ -2,10 +2,13 @@ package net.omisoft.stores.screens.splash
 
 import android.os.Handler
 import android.os.Looper
-import net.omisoft.stores.common.arch.Presenter
+import dagger.hilt.android.lifecycle.HiltViewModel
+import net.omisoft.stores.common.arch.BaseViewModel
+import net.omisoft.stores.screens.splash.navigation.SplashNavigator
 import javax.inject.Inject
 
-class SplashPresenter @Inject constructor() : Presenter<SplashView>() {
+@HiltViewModel
+class SplashViewModel @Inject constructor() : BaseViewModel<SplashNavigator>() {
 
     companion object {
         private const val SPLASH_DELAY = 1000L
@@ -15,7 +18,7 @@ class SplashPresenter @Inject constructor() : Presenter<SplashView>() {
 
     fun doOnStart() {
         handler.postDelayed({
-            view?.openContentScreen()
+            navigateTo(SplashNavigator.ContentScreenNavigation)
         }, SPLASH_DELAY)
     }
 
