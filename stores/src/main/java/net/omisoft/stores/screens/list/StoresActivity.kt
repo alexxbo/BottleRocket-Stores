@@ -10,12 +10,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import net.omisoft.mvptemplate.R
 import net.omisoft.mvptemplate.databinding.ActivityStoresBinding
 import net.omisoft.stores.common.data.model.Store
@@ -50,7 +52,7 @@ class StoresActivity : AppCompatActivity() {
         viewModel.onAction(StoresAction.FetchStoreList)
     }
 
-    private fun subscribeUi() {
+    private fun subscribeUi() = lifecycleScope.launch {
         viewModel.run {
             navigateTo.observe(this@StoresActivity, EventObserver { destination -> navigateTo(destination) })
             errorMessage.observe(this@StoresActivity, EventObserver { showMessage(it) })

@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import net.omisoft.stores.common.util.Event
 import timber.log.Timber
 
@@ -20,12 +19,6 @@ abstract class BaseViewModel<N : Navigator> : ViewModel() {
 
     private val _errorMessage = MutableLiveData<Event<String>>()
     val errorMessage: LiveData<Event<String>> = _errorMessage
-
-    override fun onCleared() {
-        super.onCleared()
-
-        subscriptions.clear()
-    }
 
     protected open fun onError(error: Throwable) {
         Timber.e(error)
@@ -43,9 +36,5 @@ abstract class BaseViewModel<N : Navigator> : ViewModel() {
 
     protected fun navigateTo(destination: N) {
         _navigateTo.value = Event(destination)
-    }
-
-    protected fun addSubscription(subscription: Disposable) {
-        subscriptions.add(subscription)
     }
 }

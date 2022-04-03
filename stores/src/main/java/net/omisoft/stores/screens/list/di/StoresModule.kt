@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityRetainedComponent
+import net.omisoft.stores.common.coroutines.DispatcherProvider
 import net.omisoft.stores.common.data.database.StoresDatabase
 import net.omisoft.stores.common.util.createService
 import net.omisoft.stores.screens.list.api.StoresApi
@@ -17,7 +18,11 @@ class StoresModule {
     fun api(): StoresApi = createService(StoresApi::class.java)
 
     @Provides
-    fun repository(database: StoresDatabase, api: StoresApi): StoresRepository {
-        return StoresRepository(database.storeDao(), api)
+    fun repository(
+        database: StoresDatabase,
+        api: StoresApi,
+        dispatcherProvider: DispatcherProvider,
+    ): StoresRepository {
+        return StoresRepository(database.storeDao(), api, dispatcherProvider)
     }
 }

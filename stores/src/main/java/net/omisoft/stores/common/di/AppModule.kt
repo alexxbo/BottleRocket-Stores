@@ -7,11 +7,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
 import net.omisoft.mvptemplate.BuildConfig
+import net.omisoft.stores.common.coroutines.DispatcherProvider
 import net.omisoft.stores.common.data.database.StoresDatabase
-import net.omisoft.stores.common.rx.RxWorkers
 import javax.inject.Singleton
 
 @Module
@@ -32,5 +31,5 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun workers() = RxWorkers(Schedulers.io(), AndroidSchedulers.mainThread())
+    fun dispatchers() = DispatcherProvider(ioDispatcher = Dispatchers.IO, mainDispatcher = Dispatchers.Main)
 }
