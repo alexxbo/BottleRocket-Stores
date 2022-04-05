@@ -1,24 +1,27 @@
 package net.omisoft.stores.screens.list.api.model
 
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import net.omisoft.stores.common.data.database.entity.StoreEntity
 
+@Serializable
 data class StoresResponse(
-    @SerializedName("stores") val stores: List<StoreResponse>
+    @SerialName("stores") val stores: List<StoreResponse>
 ) {
 
+    @Serializable
     data class StoreResponse(
-        @SerializedName("storeID") val storeId: String,
-        @SerializedName("address") val address: String,
-        @SerializedName("city") val city: String,
-        @SerializedName("latitude") val latitude: String,
-        @SerializedName("longitude") val longitude: String,
-        @SerializedName("name") val name: String,
-        @SerializedName("phone") val phone: String,
-        @SerializedName("state") val state: String,
-        @SerializedName("storeLogoURL") val storeLogoURL: String,
-        @SerializedName("zipcode") val zipcode: String,
+        @SerialName("storeID") val storeId: String,
+        @SerialName("address") val address: String,
+        @SerialName("city") val city: String,
+        @SerialName("latitude") val latitude: String,
+        @SerialName("longitude") val longitude: String,
+        @SerialName("name") val name: String,
+        @SerialName("phone") val phone: String,
+        @SerialName("state") val state: String,
+        @SerialName("storeLogoURL") val storeLogoURL: String,
+        @SerialName("zipcode") val zipcode: String,
     )
 }
 
