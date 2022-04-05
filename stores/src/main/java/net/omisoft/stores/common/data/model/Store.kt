@@ -1,8 +1,9 @@
 package net.omisoft.stores.common.data.model
 
-import kotlinx.serialization.Serializable
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-@Serializable
+@Parcelize
 data class Store(
     val storeId: String,
     val address: String,
@@ -14,4 +15,4 @@ data class Store(
     val state: String,
     val storeLogoURL: String,
     val zipcode: String,
-)
+): Parcelable

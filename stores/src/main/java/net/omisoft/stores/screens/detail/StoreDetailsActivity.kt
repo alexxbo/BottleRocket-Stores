@@ -10,7 +10,6 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.serialization.json.Json
 import net.omisoft.mvptemplate.BuildConfig
 import net.omisoft.mvptemplate.R
 import net.omisoft.mvptemplate.databinding.ActivityStoreDetailsBinding
@@ -21,10 +20,9 @@ import net.omisoft.stores.screens.detail.navigation.StoreDetailsNavigator
 
 private const val STORE_EXTRA = "${BuildConfig.APPLICATION_ID}_STORE_EXTRA"
 private var Intent.storeExtra
-    get() = getStringExtra(STORE_EXTRA).orEmpty()
-        .let { Json.decodeFromString(Store.serializer(), it) }
+    get() = getParcelableExtra<Store>(STORE_EXTRA)
     set(value) {
-        putExtra(STORE_EXTRA, Json.encodeToString(Store.serializer(), value))
+        putExtra(STORE_EXTRA, value)
     }
 
 @AndroidEntryPoint
