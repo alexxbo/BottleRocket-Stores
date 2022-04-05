@@ -5,10 +5,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import net.omisoft.stores.common.data.database.StoreDao
-import net.omisoft.stores.common.data.database.entity.StoreEntity
-import net.omisoft.stores.common.data.database.entity.toStore
 import net.omisoft.stores.common.data.model.Store
+import net.omisoft.stores.common.data.storage.StoresStorage
+import net.omisoft.stores.common.data.storage.database.entity.StoreEntity
+import net.omisoft.stores.common.data.storage.database.entity.toStore
 import net.omisoft.stores.common.util.DispatcherProvider
 import net.omisoft.stores.screens.list.api.StoresApi
 import net.omisoft.stores.screens.list.api.model.toStoreEntity
@@ -18,11 +18,11 @@ interface StoresRepository {
     companion object {
 
         operator fun invoke(
-            storeDao: StoreDao,
+            storage: StoresStorage,
             api: StoresApi,
             dispatchers: DispatcherProvider
         ): StoresRepository {
-            return StoresRepositoryImpl(storeDao, api, dispatchers)
+            return StoresRepositoryImpl(storage, api, dispatchers)
         }
     }
 
@@ -31,7 +31,7 @@ interface StoresRepository {
 }
 
 private class StoresRepositoryImpl(
-    private val storeDao: StoreDao,
+    private val storage: StoresStorage,
     private val api: StoresApi,
     private val dispatchers: DispatcherProvider,
 ) : StoresRepository {
@@ -48,7 +48,7 @@ private class StoresRepositoryImpl(
                 prefetchDistance = PAGE_SIZE,
                 enablePlaceholders = false,
             ),
-            pagingSourceFactory = { storeDao.getAll() }
+            pagingSourceFactory = { storage.getAllStores() }
         )
             .flow
             .map { pagingData -> pagingData.map { it.toStore() } }
@@ -56,16 +56,14 @@ private class StoresRepositoryImpl(
     }
 
     override suspend fun refreshStores(): Result<Unit> = withContext(dispatchers.ioDispatcher) {
-        runCatching {
+        return@withContext runCatching {
             val response = api.getStores()
             val storeEntities = response.stores.map { it.toStoreEntity() }
             insertAll(storeEntities)
         }
-            .onSuccess { return@withContext Result.success(Unit) }
-            .onFailure { return@withContext Result.failure(it) }
     }
 
     private fun insertAll(stores: List<StoreEntity>) {
-        storeDao.insertAll(stores)
+        storage.insertAllStores(stores)
     }
 }

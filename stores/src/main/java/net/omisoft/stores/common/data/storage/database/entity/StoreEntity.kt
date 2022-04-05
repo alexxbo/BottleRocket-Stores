@@ -1,21 +1,21 @@
-package net.omisoft.stores.common.data.database.entity
+package net.omisoft.stores.common.data.storage.database.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import net.omisoft.stores.common.data.database.entity.StoreEntity.ColumnName.ADDRESS
-import net.omisoft.stores.common.data.database.entity.StoreEntity.ColumnName.CITY
-import net.omisoft.stores.common.data.database.entity.StoreEntity.ColumnName.ID
-import net.omisoft.stores.common.data.database.entity.StoreEntity.ColumnName.LATITUDE
-import net.omisoft.stores.common.data.database.entity.StoreEntity.ColumnName.LOGO_URL
-import net.omisoft.stores.common.data.database.entity.StoreEntity.ColumnName.LONGITUDE
-import net.omisoft.stores.common.data.database.entity.StoreEntity.ColumnName.NAME
-import net.omisoft.stores.common.data.database.entity.StoreEntity.ColumnName.PHONE
-import net.omisoft.stores.common.data.database.entity.StoreEntity.ColumnName.STATE
-import net.omisoft.stores.common.data.database.entity.StoreEntity.ColumnName.TABLE_NAME
-import net.omisoft.stores.common.data.database.entity.StoreEntity.ColumnName.ZIP_CODE
 import net.omisoft.stores.common.data.model.Store
+import net.omisoft.stores.common.data.storage.database.entity.StoreEntity.ColumnName.ADDRESS
+import net.omisoft.stores.common.data.storage.database.entity.StoreEntity.ColumnName.CITY
+import net.omisoft.stores.common.data.storage.database.entity.StoreEntity.ColumnName.ID
+import net.omisoft.stores.common.data.storage.database.entity.StoreEntity.ColumnName.LATITUDE
+import net.omisoft.stores.common.data.storage.database.entity.StoreEntity.ColumnName.LOGO_URL
+import net.omisoft.stores.common.data.storage.database.entity.StoreEntity.ColumnName.LONGITUDE
+import net.omisoft.stores.common.data.storage.database.entity.StoreEntity.ColumnName.NAME
+import net.omisoft.stores.common.data.storage.database.entity.StoreEntity.ColumnName.PHONE
+import net.omisoft.stores.common.data.storage.database.entity.StoreEntity.ColumnName.STATE
+import net.omisoft.stores.common.data.storage.database.entity.StoreEntity.ColumnName.TABLE_NAME
+import net.omisoft.stores.common.data.storage.database.entity.StoreEntity.ColumnName.ZIP_CODE
 
 @Entity(tableName = TABLE_NAME, indices = [Index(value = [ID], unique = true)])
 data class StoreEntity(

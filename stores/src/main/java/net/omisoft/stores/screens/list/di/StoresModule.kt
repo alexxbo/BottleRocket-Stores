@@ -5,7 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityRetainedComponent
 import io.ktor.client.*
-import net.omisoft.stores.common.data.database.StoresDatabase
+import net.omisoft.stores.common.data.storage.StoresStorage
 import net.omisoft.stores.common.util.DispatcherProvider
 import net.omisoft.stores.screens.list.api.StoresApi
 import net.omisoft.stores.screens.list.data.StoresRepository
@@ -19,10 +19,10 @@ class StoresModule {
 
     @Provides
     fun repository(
-        database: StoresDatabase,
+        storage: StoresStorage,
         api: StoresApi,
         dispatcherProvider: DispatcherProvider,
     ): StoresRepository {
-        return StoresRepository(database.storeDao(), api, dispatcherProvider)
+        return StoresRepository(storage, api, dispatcherProvider)
     }
 }

@@ -10,7 +10,8 @@ import dagger.hilt.components.SingletonComponent
 import io.ktor.client.*
 import kotlinx.coroutines.Dispatchers
 import net.omisoft.mvptemplate.BuildConfig
-import net.omisoft.stores.common.data.database.StoresDatabase
+import net.omisoft.stores.common.data.storage.StoresStorage
+import net.omisoft.stores.common.data.storage.database.StoresDatabase
 import net.omisoft.stores.common.util.DispatcherProvider
 import net.omisoft.stores.common.util.createHttpClient
 import javax.inject.Singleton
@@ -30,6 +31,10 @@ class AppModule {
             .fallbackToDestructiveMigration()
             .build()
     }
+
+    @Provides
+    @Singleton
+    fun storeStorage(database: StoresDatabase) = StoresStorage(database.storeDao())
 
     @Provides
     @Singleton

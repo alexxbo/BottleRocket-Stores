@@ -1,11 +1,11 @@
-package net.omisoft.stores.common.data.database
+package net.omisoft.stores.common.data.storage.database
 
 import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import net.omisoft.stores.common.data.database.entity.StoreEntity
+import net.omisoft.stores.common.data.storage.database.entity.StoreEntity
 
 @Dao
 interface StoreDao {

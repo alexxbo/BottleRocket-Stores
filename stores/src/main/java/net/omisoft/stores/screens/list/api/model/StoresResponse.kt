@@ -3,7 +3,7 @@ package net.omisoft.stores.screens.list.api.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import net.omisoft.stores.common.data.database.entity.StoreEntity
+import net.omisoft.stores.common.data.storage.database.entity.StoreEntity
 
 @Serializable
 data class StoresResponse(
