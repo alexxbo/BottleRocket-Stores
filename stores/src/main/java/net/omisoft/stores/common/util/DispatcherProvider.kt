@@ -1,4 +1,4 @@
-package net.omisoft.stores.common.coroutines
+package net.omisoft.stores.common.util
 
 import kotlinx.coroutines.CoroutineDispatcher
 

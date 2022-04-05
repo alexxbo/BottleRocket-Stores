@@ -2,13 +2,14 @@ package net.omisoft.stores.screens.list.data
 
 import androidx.paging.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import net.omisoft.stores.common.coroutines.DispatcherProvider
 import net.omisoft.stores.common.data.database.StoreDao
 import net.omisoft.stores.common.data.database.entity.StoreEntity
 import net.omisoft.stores.common.data.database.entity.toStore
 import net.omisoft.stores.common.data.model.Store
+import net.omisoft.stores.common.util.DispatcherProvider
 import net.omisoft.stores.screens.list.api.StoresApi
 import net.omisoft.stores.screens.list.api.model.toStoreEntity
 
@@ -51,6 +52,7 @@ private class StoresRepositoryImpl(
         )
             .flow
             .map { pagingData -> pagingData.map { it.toStore() } }
+            .flowOn(dispatchers.ioDispatcher)
     }
 
     override suspend fun refreshStores(): Result<Unit> = withContext(dispatchers.ioDispatcher) {

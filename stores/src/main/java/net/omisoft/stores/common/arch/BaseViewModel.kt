@@ -1,40 +1,45 @@
 package net.omisoft.stores.common.arch
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import io.reactivex.disposables.CompositeDisposable
-import net.omisoft.stores.common.util.Event
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 abstract class BaseViewModel<N : Navigator> : ViewModel() {
 
     private val subscriptions by lazy { CompositeDisposable() }
 
-    private val _navigateTo = MutableLiveData<Event<N>>(null)
-    val navigateTo: LiveData<Event<N>> = _navigateTo
+    private val _navigateTo: MutableSharedFlow<N> =
+        MutableSharedFlow(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    val navigateTo: SharedFlow<N> = _navigateTo.asSharedFlow()
 
-    private val _progress = MutableLiveData(false)
-    val progress: LiveData<Boolean> = _progress
+    private val _errorMessage: MutableSharedFlow<String> =
+        MutableSharedFlow(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    val errorMessage: SharedFlow<String> = _errorMessage.asSharedFlow()
 
-    private val _errorMessage = MutableLiveData<Event<String>>()
-    val errorMessage: LiveData<Event<String>> = _errorMessage
+    private val _progress = MutableStateFlow(false)
+    val progress: StateFlow<Boolean> = _progress.asStateFlow()
 
-    protected open fun onError(error: Throwable) {
+    protected open fun onError(error: Throwable) = viewModelScope.launch {
+        if (errorMessage is CancellationException) return@launch
         Timber.e(error)
         showProgress(false)
-        error.localizedMessage?.let { _errorMessage.value = Event(it) }
+        error.localizedMessage?.let { _errorMessage.emit(it) }
     }
 
     protected fun showProgress(show: Boolean) {
         _progress.value = show
     }
 
-    protected fun showErrorMessage(message: String) {
-        _errorMessage.value = Event(message)
+    protected fun showErrorMessage(message: String) = viewModelScope.launch {
+        _errorMessage.emit(message)
     }
 
-    protected fun navigateTo(destination: N) {
-        _navigateTo.value = Event(destination)
+    protected fun navigateTo(destination: N) = viewModelScope.launch {
+        _navigateTo.emit(destination)
     }
 }

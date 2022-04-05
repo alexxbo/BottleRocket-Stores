@@ -1,8 +1,9 @@
 package net.omisoft.stores.screens.splash
 
-import android.os.Handler
-import android.os.Looper
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import net.omisoft.stores.common.arch.BaseViewModel
 import net.omisoft.stores.screens.splash.navigation.SplashNavigator
 import javax.inject.Inject
@@ -14,15 +15,8 @@ class SplashViewModel @Inject constructor() : BaseViewModel<SplashNavigator>() {
         private const val SPLASH_DELAY = 1000L
     }
 
-    private var handler = Handler(Looper.getMainLooper())
-
-    fun doOnStart() {
-        handler.postDelayed({
-            navigateTo(SplashNavigator.ContentScreenNavigation)
-        }, SPLASH_DELAY)
-    }
-
-    fun doOnStop() {
-        handler.removeCallbacksAndMessages(null)
+    fun doOnStart() = viewModelScope.launch {
+        delay(SPLASH_DELAY)
+        navigateTo(SplashNavigator.ContentScreenNavigation)
     }
 }

@@ -1,18 +1,18 @@
 package net.omisoft.stores.screens.detail
 
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import net.omisoft.stores.common.arch.BaseViewModel
 import net.omisoft.stores.common.data.model.Store
 import net.omisoft.stores.screens.detail.navigation.StoreDetailsNavigator
-import net.omisoft.stores.screens.detail.state.StoreDetailsViewState
-import net.omisoft.stores.screens.detail.state.StoreDetailsViewStateImpl
 import javax.inject.Inject
 
 class StoreDetailsViewModel @Inject constructor() : BaseViewModel<StoreDetailsNavigator>() {
 
-    private var locationData: String? = null
-
-    private val _viewState = StoreDetailsViewStateImpl()
-    val viewState: StoreDetailsViewState = _viewState
+    private val _uiState = MutableStateFlow(StoreDetailsUiState())
+    val uiState: StateFlow<StoreDetailsUiState> = _uiState.asStateFlow()
 
     fun onAction(action: StoreDetailsAction) {
         when (action) {
@@ -28,18 +28,20 @@ class StoreDetailsViewModel @Inject constructor() : BaseViewModel<StoreDetailsNa
 
     private fun doOnStart(store: Store?) {
         if (store == null) {
-            _viewState.showEmptyState.value = Unit
+            _uiState.update { currentUiState ->
+                currentUiState.copy(showEmptyState = true)
+            }
         } else {
-            prepareLocationData(store.latitude, store.longitude)
-            _viewState.store.value = store
+            _uiState.update { currentUiState ->
+                currentUiState.copy(
+                    store = store,
+                    locationData = "geo:$store.latitude,$store.longitude"
+                )
+            }
         }
     }
 
     private fun onOpenMapClick() {
-        locationData?.let { navigateTo(StoreDetailsNavigator.MapNavigation(it)) }
-    }
-
-    private fun prepareLocationData(latitude: String, longitude: String) {
-        locationData = "geo:$latitude,$longitude"
+        uiState.value.locationData?.let { navigateTo(StoreDetailsNavigator.MapNavigation(it)) }
     }
 }

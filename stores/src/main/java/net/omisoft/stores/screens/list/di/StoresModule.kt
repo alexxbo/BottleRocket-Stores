@@ -4,8 +4,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityRetainedComponent
-import net.omisoft.stores.common.coroutines.DispatcherProvider
 import net.omisoft.stores.common.data.database.StoresDatabase
+import net.omisoft.stores.common.util.DispatcherProvider
 import net.omisoft.stores.common.util.createService
 import net.omisoft.stores.screens.list.api.StoresApi
 import net.omisoft.stores.screens.list.data.StoresRepository

@@ -9,8 +9,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.Dispatchers
 import net.omisoft.mvptemplate.BuildConfig
-import net.omisoft.stores.common.coroutines.DispatcherProvider
 import net.omisoft.stores.common.data.database.StoresDatabase
+import net.omisoft.stores.common.util.DispatcherProvider
 import javax.inject.Singleton
 
 @Module

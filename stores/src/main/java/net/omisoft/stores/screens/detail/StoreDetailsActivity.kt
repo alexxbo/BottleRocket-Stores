@@ -4,9 +4,10 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.json.Json
@@ -14,7 +15,8 @@ import net.omisoft.mvptemplate.BuildConfig
 import net.omisoft.mvptemplate.R
 import net.omisoft.mvptemplate.databinding.ActivityStoreDetailsBinding
 import net.omisoft.stores.common.data.model.Store
-import net.omisoft.stores.common.util.EventObserver
+import net.omisoft.stores.common.util.collectDistinctFlow
+import net.omisoft.stores.common.util.collectFlow
 import net.omisoft.stores.screens.detail.navigation.StoreDetailsNavigator
 
 private const val STORE_EXTRA = "${BuildConfig.APPLICATION_ID}_STORE_EXTRA"
@@ -54,11 +56,10 @@ class StoreDetailsActivity : AppCompatActivity() {
 
     private fun subscribeUi() {
         viewModel.run {
-            navigateTo.observe(this@StoreDetailsActivity, EventObserver { destination -> navigateTo(destination) })
-
-            viewState.run {
-                store.observe(this@StoreDetailsActivity, { updateStore(it) })
-                showEmptyState.observe(this@StoreDetailsActivity, { showEmptyState() })
+            collectDistinctFlow(viewModel.navigateTo) { destination -> navigateTo(destination) }
+            collectFlow(uiState) { uiState ->
+                showEmptyState(uiState.showEmptyState)
+                updateStore(uiState.store)
             }
         }
     }
@@ -70,7 +71,8 @@ class StoreDetailsActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateStore(store: Store) {
+    private fun updateStore(store: Store?) {
+        if (store == null) return
         binding.run {
 
             Glide.with(root)
@@ -93,9 +95,9 @@ class StoreDetailsActivity : AppCompatActivity() {
         startActivity(mapIntent)
     }
 
-    private fun showEmptyState() {
-        binding.photoContainer.visibility = View.GONE
-        binding.emptyState.visibility = View.VISIBLE
+    private fun showEmptyState(show: Boolean) {
+        binding.photoContainer.isGone = show
+        binding.emptyState.isVisible = show
     }
 
     private fun goBack() {

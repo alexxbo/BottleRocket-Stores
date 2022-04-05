@@ -10,18 +10,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import net.omisoft.mvptemplate.R
 import net.omisoft.mvptemplate.databinding.ActivityStoresBinding
 import net.omisoft.stores.common.data.model.Store
-import net.omisoft.stores.common.util.EventObserver
+import net.omisoft.stores.common.util.collectDistinctFlow
+import net.omisoft.stores.common.util.collectFlow
 import net.omisoft.stores.screens.detail.StoreDetailsActivity
 import net.omisoft.stores.screens.list.adapter.StoresAdapter
 import net.omisoft.stores.screens.list.navigation.StoresNavigator
@@ -49,18 +48,17 @@ class StoresActivity : AppCompatActivity() {
 
         initView()
         subscribeUi()
-        viewModel.onAction(StoresAction.FetchStoreList)
+        viewModel.onAction(StoresUiAction.FetchStoreList)
     }
 
-    private fun subscribeUi() = lifecycleScope.launch {
+    private fun subscribeUi() {
         viewModel.run {
-            navigateTo.observe(this@StoresActivity, EventObserver { destination -> navigateTo(destination) })
-            errorMessage.observe(this@StoresActivity, EventObserver { showMessage(it) })
-            progress.observe(this@StoresActivity, { showLoading(it) })
-
-            viewState.run {
-                stores.observe(this@StoresActivity, { updateStores(it) })
-                showEmptyState.observe(this@StoresActivity, { showEmptyState(it) })
+            collectDistinctFlow(errorMessage) { message -> showMessage(message) }
+            collectDistinctFlow(navigateTo) { destination -> navigateTo(destination) }
+            collectFlow(progress) { show -> showLoading(show) }
+            collectFlow(uiState) { uiState ->
+                showEmptyState(uiState.showEmptyState)
+                updateStores(uiState.pagingData)
             }
         }
     }
@@ -69,7 +67,8 @@ class StoresActivity : AppCompatActivity() {
         binding.swipeRefreshContainer.isRefreshing = show
     }
 
-    private fun updateStores(data: PagingData<Store>) {
+    private fun updateStores(data: PagingData<Store>?) {
+        if (data == null) return
         adapter?.submitData(lifecycle, data)
     }
 
@@ -98,10 +97,10 @@ class StoresActivity : AppCompatActivity() {
                 title = getString(R.string.stores_toolbar_title)
             }
 
-            adapter = StoresAdapter(listener = { viewModel.onAction(StoresAction.ClickItem(it)) })
+            adapter = StoresAdapter(listener = { viewModel.onAction(StoresUiAction.ClickItem(it)) })
             adapter?.addLoadStateListener { loadStates ->
                 viewModel.onAction(
-                    StoresAction.EmptyStoreList(
+                    StoresUiAction.EmptyStoreList(
                         loadStates.source.refresh is LoadState.NotLoading
                                 && loadStates.append.endOfPaginationReached
                                 && adapter?.itemCount == 0
@@ -111,7 +110,7 @@ class StoresActivity : AppCompatActivity() {
             listView.adapter = adapter
             listView.addDivider()
 
-            swipeRefreshContainer.setOnRefreshListener { viewModel.onAction(StoresAction.FetchStoreList) }
+            swipeRefreshContainer.setOnRefreshListener { viewModel.onAction(StoresUiAction.FetchStoreList) }
         }
     }
 
