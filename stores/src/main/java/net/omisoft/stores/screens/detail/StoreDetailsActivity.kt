@@ -8,7 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import com.bumptech.glide.Glide
+import coil.load
 import dagger.hilt.android.AndroidEntryPoint
 import net.omisoft.bottlerocket.BuildConfig
 import net.omisoft.bottlerocket.R
@@ -73,10 +73,7 @@ class StoreDetailsActivity : AppCompatActivity() {
         if (store == null) return
         binding.run {
 
-            Glide.with(root)
-                .load(store.storeLogoURL)
-                .into(storeLogo)
-
+            storeLogo.load(store.storeLogoURL)
             storeTitle.text = store.name
             storePhone.text = getString(R.string.store_phone, store.phone)
             storeState.text = getString(R.string.store_state, store.state)

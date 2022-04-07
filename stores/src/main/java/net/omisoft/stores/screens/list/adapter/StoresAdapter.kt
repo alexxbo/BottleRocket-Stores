@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import net.omisoft.mvptemplate.R
-import net.omisoft.mvptemplate.databinding.ItemStoreBinding
+import coil.load
+import net.omisoft.bottlerocket.R
+import net.omisoft.bottlerocket.databinding.ItemStoreBinding
 import net.omisoft.stores.common.data.model.Store
 
 class StoresAdapter(
@@ -37,15 +37,11 @@ class StoresAdapter(
 
         fun bind(store: Store) = binding.run {
 
-            Glide.with(itemView)
-                .load(store.storeLogoURL)
-                .into(storeLogo)
-
+            storeLogo.load(store.storeLogoURL)
             storeTitle.text = store.name
             storeCity.text = itemView.context.getString(R.string.store_city, store.city)
             storeAddress.text = itemView.context.getString(R.string.store_address, store.address)
             storePhone.text = itemView.context.getString(R.string.store_phone, store.phone)
-
             itemView.setOnClickListener { listener.invoke(store) }
         }
     }
