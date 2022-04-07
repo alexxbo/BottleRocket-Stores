@@ -48,7 +48,7 @@ class StoresActivity : AppCompatActivity() {
 
         initView()
         subscribeUi()
-        viewModel.onAction(StoresUiAction.FetchStoreList)
+        viewModel.onAction(StoresUiAction.RefreshStoreList)
     }
 
     private fun subscribeUi() {
@@ -56,10 +56,8 @@ class StoresActivity : AppCompatActivity() {
             collectDistinctFlow(errorMessage) { message -> showMessage(message) }
             collectDistinctFlow(navigateTo) { destination -> navigateTo(destination) }
             collectFlow(progress) { show -> showLoading(show) }
-            collectFlow(uiState) { uiState ->
-                showEmptyState(uiState.showEmptyState)
-                updateStores(uiState.pagingData)
-            }
+            collectFlow(uiState) { uiState -> showEmptyState(uiState.showEmptyState) }
+            collectFlow(pagingDataFlow) { updateStores(it) }
         }
     }
 
@@ -110,7 +108,7 @@ class StoresActivity : AppCompatActivity() {
             listView.adapter = adapter
             listView.addDivider()
 
-            swipeRefreshContainer.setOnRefreshListener { viewModel.onAction(StoresUiAction.FetchStoreList) }
+            swipeRefreshContainer.setOnRefreshListener { viewModel.onAction(StoresUiAction.RefreshStoreList) }
         }
     }
 

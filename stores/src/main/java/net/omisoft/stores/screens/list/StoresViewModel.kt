@@ -2,12 +2,10 @@ package net.omisoft.stores.screens.list
 
 
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import net.omisoft.stores.common.arch.BaseViewModel
 import net.omisoft.stores.common.data.model.Store
@@ -23,27 +21,15 @@ class StoresViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(StoreUiState())
     val uiState: StateFlow<StoreUiState> = _uiState.asStateFlow()
 
+    val pagingDataFlow: Flow<PagingData<Store>> = repository.getStoresPagingData()
+        .cachedIn(viewModelScope)
+
     fun onAction(action: StoresUiAction) {
         when (action) {
-            is StoresUiAction.FetchStoreList -> fetchStores()
+            is StoresUiAction.RefreshStoreList -> refreshStores()
             is StoresUiAction.ClickItem -> onStoreItemClicked(action.store)
             is StoresUiAction.EmptyStoreList -> onStoreListEmpty(action.empty)
         }
-    }
-
-    private fun fetchStores() {
-        loadStores()
-        refreshStores()
-    }
-
-    private fun loadStores() = viewModelScope.launch {
-        repository.getStore()
-            .cachedIn(this)
-            .collect { pagingData ->
-                _uiState.update { currentUiState ->
-                    currentUiState.copy(pagingData = pagingData)
-                }
-            }
     }
 
     private fun onStoreItemClicked(store: Store) = viewModelScope.launch {

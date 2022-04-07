@@ -26,7 +26,7 @@ interface StoresRepository {
         }
     }
 
-    fun getStore(): Flow<PagingData<Store>>
+    fun getStoresPagingData(): Flow<PagingData<Store>>
     suspend fun refreshStores(): Result<Unit>
 }
 
@@ -40,7 +40,7 @@ private class StoresRepositoryImpl(
         private const val PAGE_SIZE = 15
     }
 
-    override fun getStore(): Flow<PagingData<Store>> {
+    override fun getStoresPagingData(): Flow<PagingData<Store>> {
         return Pager(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
