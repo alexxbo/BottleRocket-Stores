@@ -53,9 +53,6 @@ android {
         jvmTarget = "11"
     }
 
-    lintOptions {
-        abortOnError false
-    }
 
     buildFeatures {
         viewBinding true
@@ -63,6 +60,10 @@ android {
 
     hilt {
         enableAggregatingTask = true
+    }
+
+    lint {
+        abortOnError false
     }
 }
 
