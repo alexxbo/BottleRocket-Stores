@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
-import net.omisoft.mvptemplate.R
+import net.omisoft.bottlerocket.R
 import net.omisoft.stores.common.util.collectDistinctFlow
 import net.omisoft.stores.screens.list.StoresActivity
 import net.omisoft.stores.screens.splash.navigation.SplashNavigator

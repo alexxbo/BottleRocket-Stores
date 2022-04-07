@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
-import net.omisoft.mvptemplate.R
-import net.omisoft.mvptemplate.databinding.ActivityStoresBinding
+import net.omisoft.bottlerocket.R
+import net.omisoft.bottlerocket.databinding.ActivityStoresBinding
 import net.omisoft.stores.common.data.model.Store
 import net.omisoft.stores.common.util.collectDistinctFlow
 import net.omisoft.stores.common.util.collectFlow

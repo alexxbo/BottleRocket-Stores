@@ -2,7 +2,7 @@ package net.omisoft.stores.screens.list.api
 
 import io.ktor.client.*
 import io.ktor.client.request.*
-import net.omisoft.mvptemplate.BuildConfig
+import net.omisoft.bottlerocket.BuildConfig
 import net.omisoft.stores.screens.list.api.StoresEndpoints.GET_STORES
 import net.omisoft.stores.screens.list.api.model.StoresResponse
 

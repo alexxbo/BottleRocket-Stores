@@ -4,7 +4,7 @@ import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
-import net.omisoft.mvptemplate.BuildConfig
+import net.omisoft.bottlerocket.BuildConfig
 import okhttp3.logging.HttpLoggingInterceptor
 
 fun createHttpClient(): HttpClient {

@@ -9,7 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.*
 import kotlinx.coroutines.Dispatchers
-import net.omisoft.mvptemplate.BuildConfig
+import net.omisoft.bottlerocket.BuildConfig
 import net.omisoft.stores.common.data.storage.StoresStorage
 import net.omisoft.stores.common.data.storage.database.StoresDatabase
 import net.omisoft.stores.common.util.DispatcherProvider

@@ -2,7 +2,7 @@ package net.omisoft.stores
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
-import net.omisoft.mvptemplate.BuildConfig
+import net.omisoft.bottlerocket.BuildConfig
 import timber.log.Timber
 
 @HiltAndroidApp

@@ -10,9 +10,9 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
-import net.omisoft.mvptemplate.BuildConfig
-import net.omisoft.mvptemplate.R
-import net.omisoft.mvptemplate.databinding.ActivityStoreDetailsBinding
+import net.omisoft.bottlerocket.BuildConfig
+import net.omisoft.bottlerocket.R
+import net.omisoft.bottlerocket.databinding.ActivityStoreDetailsBinding
 import net.omisoft.stores.common.data.model.Store
 import net.omisoft.stores.common.util.collectDistinctFlow
 import net.omisoft.stores.common.util.collectFlow
