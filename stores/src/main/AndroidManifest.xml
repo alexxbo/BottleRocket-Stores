@@ -15,7 +15,6 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-
         <activity
             android:name="net.omisoft.stores.screens.splash.SplashActivity"
             android:exported="true"
@@ -26,12 +25,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
+            android:exported="false"
             android:name="net.omisoft.stores.screens.list.StoresActivity"
             android:screenOrientation="portrait" />
-
         <activity
+            android:exported="false"
             android:name="net.omisoft.stores.screens.detail.StoreDetailsActivity"
             android:screenOrientation="portrait" />
     </application>

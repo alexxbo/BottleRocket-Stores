@@ -1,5 +1,6 @@
 package net.omisoft.stores.common.util
 
+import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -24,6 +25,16 @@ fun <T> AppCompatActivity.collectFlow(flow: Flow<T>, onCollect: (T) -> Unit) {
 }
 
 fun <T> AppCompatActivity.collectDistinctFlow(flow: Flow<T>, onCollect: (T) -> Unit) {
+    lifecycleScope.launch {
+        repeatOnLifecycle(Lifecycle.State.STARTED) {
+            flow.distinctUntilChanged().collect {
+                onCollect(it)
+            }
+        }
+    }
+}
+
+fun <T> ComponentActivity.collectDistinctFlow(flow: Flow<T>, onCollect: (T) -> Unit) {
     lifecycleScope.launch {
         repeatOnLifecycle(Lifecycle.State.STARTED) {
             flow.distinctUntilChanged().collect {
