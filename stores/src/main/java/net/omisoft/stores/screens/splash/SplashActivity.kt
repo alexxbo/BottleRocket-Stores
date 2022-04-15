@@ -5,9 +5,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import net.omisoft.bottlerocket.R
-import net.omisoft.stores.common.util.collectDistinctFlow
-import net.omisoft.stores.screens.list.StoresActivity
-import net.omisoft.stores.screens.splash.navigation.SplashNavigator
+import net.omisoft.stores.screens.splash.navigation.SplashNavigation
 
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
@@ -17,7 +15,8 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-        subscribeUi()
+
+        initNavigation()
     }
 
     override fun onStart() {
@@ -26,17 +25,8 @@ class SplashActivity : AppCompatActivity() {
         viewModel.doOnStart()
     }
 
-    private fun subscribeUi() {
-        collectDistinctFlow(viewModel.navigateTo) { destination -> navigateTo(destination) }
-    }
-
-    private fun navigateTo(destination: SplashNavigator) {
-        when (destination) {
-            is SplashNavigator.ContentScreenNavigation -> openContentScreen()
-        }
-    }
-
-    private fun openContentScreen() {
-        StoresActivity.launch(this)
+    private fun initNavigation() {
+        SplashNavigation(lifecycleOwner = this, activity = this)
+            .subscribe(viewModel.navigateTo)
     }
 }

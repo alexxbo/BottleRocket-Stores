@@ -2,7 +2,6 @@ package net.omisoft.stores.screens.detail
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -25,8 +24,7 @@ import net.omisoft.bottlerocket.BuildConfig
 import net.omisoft.bottlerocket.R
 import net.omisoft.stores.common.data.model.Store
 import net.omisoft.stores.common.ui.theme.BottlerocketappsTheme
-import net.omisoft.stores.common.util.collectDistinctFlow
-import net.omisoft.stores.screens.detail.navigation.StoreDetailsNavigator
+import net.omisoft.stores.screens.detail.navigation.StoreDetailsNavigation
 
 private const val STORE_EXTRA = "${BuildConfig.APPLICATION_ID}_STORE_EXTRA"
 private var Intent.storeExtra
@@ -39,7 +37,6 @@ private var Intent.storeExtra
 class StoreDetailsActivity : ComponentActivity() {
 
     companion object {
-        private const val MAP_PACKAGE = "com.google.android.apps.maps"
 
         fun launch(activity: Activity, store: Store) {
             Intent(activity, StoreDetailsActivity::class.java)
@@ -53,7 +50,8 @@ class StoreDetailsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        subscribeUi()
+        initNavigation()
+
         intent?.storeExtra?.also { store ->
             viewModel.onAction(StoreDetailsAction.OnStart(store))
         }
@@ -64,28 +62,9 @@ class StoreDetailsActivity : ComponentActivity() {
         }
     }
 
-    private fun subscribeUi() {
-        viewModel.run {
-            collectDistinctFlow(viewModel.navigateTo) { destination -> navigateTo(destination) }
-        }
-    }
-
-    private fun navigateTo(destination: StoreDetailsNavigator) {
-        when (destination) {
-            is StoreDetailsNavigator.MapNavigation -> showOnMap(destination.location)
-            is StoreDetailsNavigator.BackNavigation -> goBack()
-        }
-    }
-
-    private fun showOnMap(locationData: String) {
-        val gmmIntentUri: Uri = Uri.parse(locationData)
-        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-        mapIntent.setPackage(MAP_PACKAGE)
-        startActivity(mapIntent)
-    }
-
-    private fun goBack() {
-        finish()
+    private fun initNavigation() {
+        StoreDetailsNavigation(lifecycleOwner = this, activity = this)
+            .subscribe(viewModel.navigateTo)
     }
 }
 

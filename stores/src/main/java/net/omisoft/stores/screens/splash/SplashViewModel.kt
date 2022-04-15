@@ -5,11 +5,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.omisoft.stores.common.arch.BaseViewModel
-import net.omisoft.stores.screens.splash.navigation.SplashNavigator
+import net.omisoft.stores.screens.splash.navigation.SplashDestination
 import javax.inject.Inject
 
 @HiltViewModel
-class SplashViewModel @Inject constructor() : BaseViewModel<SplashNavigator>() {
+class SplashViewModel @Inject constructor(
+) : BaseViewModel<SplashDestination>() {
 
     companion object {
         private const val SPLASH_DELAY = 1000L
@@ -17,6 +18,6 @@ class SplashViewModel @Inject constructor() : BaseViewModel<SplashNavigator>() {
 
     fun doOnStart() = viewModelScope.launch {
         delay(SPLASH_DELAY)
-        navigateTo(SplashNavigator.ContentScreenNavigation)
+        navigateTo(SplashDestination.ContentScreenDestination)
     }
 }

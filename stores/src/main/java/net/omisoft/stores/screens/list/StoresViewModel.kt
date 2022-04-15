@@ -10,13 +10,13 @@ import kotlinx.coroutines.launch
 import net.omisoft.stores.common.arch.BaseViewModel
 import net.omisoft.stores.common.data.model.Store
 import net.omisoft.stores.screens.list.data.StoresRepository
-import net.omisoft.stores.screens.list.navigation.StoresNavigator
+import net.omisoft.stores.screens.list.navigation.StoresDestination
 import javax.inject.Inject
 
 @HiltViewModel
 class StoresViewModel @Inject constructor(
     private val repository: StoresRepository,
-) : BaseViewModel<StoresNavigator>() {
+) : BaseViewModel<StoresDestination>() {
 
     private val _uiState = MutableStateFlow(StoreUiState())
     val uiState: StateFlow<StoreUiState> = _uiState.asStateFlow()
@@ -33,7 +33,7 @@ class StoresViewModel @Inject constructor(
     }
 
     private fun onStoreItemClicked(store: Store) = viewModelScope.launch {
-        navigateTo(StoresNavigator.StoreDetailsNavigation(store))
+        navigateTo(StoresDestination.StoreDetailsDestination(store))
     }
 
     private fun onStoreListEmpty(isEmptyList: Boolean) = viewModelScope.launch {

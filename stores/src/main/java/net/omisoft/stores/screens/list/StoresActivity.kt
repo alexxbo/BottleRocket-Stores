@@ -21,14 +21,14 @@ import net.omisoft.bottlerocket.databinding.ActivityStoresBinding
 import net.omisoft.stores.common.data.model.Store
 import net.omisoft.stores.common.util.collectDistinctFlow
 import net.omisoft.stores.common.util.collectFlow
-import net.omisoft.stores.screens.detail.StoreDetailsActivity
 import net.omisoft.stores.screens.list.adapter.StoresAdapter
-import net.omisoft.stores.screens.list.navigation.StoresNavigator
+import net.omisoft.stores.screens.list.navigation.StoresNavigation
 
 @AndroidEntryPoint
 class StoresActivity : AppCompatActivity() {
 
     companion object {
+
         fun launch(activity: Activity) {
             val intent = Intent(activity, StoresActivity::class.java)
             activity.startActivity(intent)
@@ -47,18 +47,24 @@ class StoresActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initView()
+        initNavigation()
         subscribeUi()
+
         viewModel.onAction(StoresUiAction.RefreshStoreList)
     }
 
     private fun subscribeUi() {
         viewModel.run {
             collectDistinctFlow(errorMessage) { message -> showMessage(message) }
-            collectDistinctFlow(navigateTo) { destination -> navigateTo(destination) }
             collectFlow(progress) { show -> showLoading(show) }
             collectFlow(uiState) { uiState -> showEmptyState(uiState.showEmptyState) }
             collectFlow(pagingDataFlow) { updateStores(it) }
         }
+    }
+
+    private fun initNavigation() {
+        StoresNavigation(lifecycleOwner = this, activity = this)
+            .subscribe(viewModel.navigateTo)
     }
 
     private fun showLoading(show: Boolean) {
@@ -68,16 +74,6 @@ class StoresActivity : AppCompatActivity() {
     private fun updateStores(data: PagingData<Store>?) {
         if (data == null) return
         adapter?.submitData(lifecycle, data)
-    }
-
-    private fun navigateTo(destination: StoresNavigator) {
-        when (destination) {
-            is StoresNavigator.StoreDetailsNavigation -> openStoreDetails(destination.store)
-        }
-    }
-
-    private fun openStoreDetails(store: Store) {
-        StoreDetailsActivity.launch(this, store)
     }
 
     private fun showEmptyState(show: Boolean) {

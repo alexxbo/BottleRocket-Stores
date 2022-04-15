@@ -2,20 +2,17 @@ package net.omisoft.stores.common.arch
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-abstract class BaseViewModel<N : Navigator> : ViewModel() {
+abstract class BaseViewModel<D : Destination> : ViewModel() {
 
-    private val subscriptions by lazy { CompositeDisposable() }
-
-    private val _navigateTo: MutableSharedFlow<N> =
+    private val _navigateTo: MutableSharedFlow<D> =
         MutableSharedFlow(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
-    val navigateTo: SharedFlow<N> = _navigateTo.asSharedFlow()
+    val navigateTo: SharedFlow<D> = _navigateTo.asSharedFlow()
 
     private val _errorMessage: MutableSharedFlow<String> =
         MutableSharedFlow(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
@@ -39,7 +36,7 @@ abstract class BaseViewModel<N : Navigator> : ViewModel() {
         _errorMessage.emit(message)
     }
 
-    protected fun navigateTo(destination: N) = viewModelScope.launch {
+    protected fun navigateTo(destination: D) = viewModelScope.launch {
         _navigateTo.emit(destination)
     }
 }

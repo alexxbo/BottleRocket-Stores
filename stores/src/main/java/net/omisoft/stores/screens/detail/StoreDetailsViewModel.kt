@@ -1,15 +1,20 @@
 package net.omisoft.stores.screens.detail
 
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import net.omisoft.stores.common.arch.BaseViewModel
 import net.omisoft.stores.common.data.model.Store
-import net.omisoft.stores.screens.detail.navigation.StoreDetailsNavigator
+import net.omisoft.stores.screens.detail.navigation.StoreDetailsDestination
 import javax.inject.Inject
 
-class StoreDetailsViewModel @Inject constructor() : BaseViewModel<StoreDetailsNavigator>() {
+@HiltViewModel
+class StoreDetailsViewModel @Inject constructor(
+) : BaseViewModel<StoreDetailsDestination>() {
 
     private val _uiState = MutableStateFlow(StoreDetailsUiState())
     val uiState: StateFlow<StoreDetailsUiState> = _uiState.asStateFlow()
@@ -22,8 +27,8 @@ class StoreDetailsViewModel @Inject constructor() : BaseViewModel<StoreDetailsNa
         }
     }
 
-    private fun onBackClicked() {
-        navigateTo(StoreDetailsNavigator.BackNavigation)
+    private fun onBackClicked() = viewModelScope.launch {
+        navigateTo(StoreDetailsDestination.BackNavigation)
     }
 
     private fun doOnStart(store: Store?) {
@@ -41,7 +46,7 @@ class StoreDetailsViewModel @Inject constructor() : BaseViewModel<StoreDetailsNa
         }
     }
 
-    private fun onOpenMapClick() {
-        uiState.value.locationData?.let { navigateTo(StoreDetailsNavigator.MapNavigation(it)) }
+    private fun onOpenMapClick() = viewModelScope.launch {
+        uiState.value.locationData?.let { navigateTo(StoreDetailsDestination.MapDestination(it)) }
     }
 }
