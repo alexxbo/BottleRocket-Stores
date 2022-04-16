@@ -130,7 +130,10 @@ dependencies {
     implementation "androidx.paging:paging-runtime-ktx:3.1.1"
     implementation "androidx.room:room-paging:$room_version"
 
-    
+    // Splashscreen
+    implementation 'androidx.core:core-splashscreen:1.0.0-beta02'
+
+
     // Compose
     def compose_version = '1.1.1'
 
