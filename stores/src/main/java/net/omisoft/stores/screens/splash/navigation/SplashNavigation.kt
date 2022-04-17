@@ -5,14 +5,14 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import net.omisoft.stores.common.arch.Destination
-import net.omisoft.stores.common.arch.ViewRouter
+import net.omisoft.stores.common.arch.Navigation
 import net.omisoft.stores.screens.list.StoresActivity
 import net.omisoft.stores.screens.splash.navigation.SplashDestination.ContentScreenDestination
 
 class SplashNavigation(
     private val activity: Activity,
     private val lifecycleOwner: LifecycleOwner,
-) : ViewRouter<SplashDestination>(lifecycleOwner) {
+) : Navigation<SplashDestination>(lifecycleOwner) {
 
     override fun navigate(destination: SplashDestination) {
         lifecycleOwner.lifecycleScope.launch {

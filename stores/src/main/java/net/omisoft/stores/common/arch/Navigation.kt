@@ -7,7 +7,7 @@ import net.omisoft.stores.common.util.collectDistinctFlow
 //Marker
 interface Destination
 
-abstract class ViewRouter<D : Destination>(
+abstract class Navigation<D : Destination>(
     private val lifecycleOwner: LifecycleOwner,
 ) {
 

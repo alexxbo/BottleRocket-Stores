@@ -7,17 +7,12 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import net.omisoft.stores.common.arch.Destination
-import net.omisoft.stores.common.arch.ViewRouter
-
-sealed class StoreDetailsDestination : Destination {
-    data class MapDestination(val location: String) : StoreDetailsDestination()
-    object BackNavigation : StoreDetailsDestination()
-}
+import net.omisoft.stores.common.arch.Navigation
 
 class StoreDetailsNavigation(
     private val activity: Activity,
     private val lifecycleOwner: LifecycleOwner,
-) : ViewRouter<StoreDetailsDestination>(lifecycleOwner) {
+) : Navigation<StoreDetailsDestination>(lifecycleOwner) {
 
     companion object {
         private const val MAP_PACKAGE = "com.google.android.apps.maps"
@@ -42,4 +37,9 @@ class StoreDetailsNavigation(
     private fun goBack() {
         activity.finish()
     }
+}
+
+sealed class StoreDetailsDestination : Destination {
+    data class MapDestination(val location: String) : StoreDetailsDestination()
+    object BackNavigation : StoreDetailsDestination()
 }
